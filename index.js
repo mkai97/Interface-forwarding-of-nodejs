@@ -74,6 +74,7 @@ app.all("*",function(req,res,next){
 
 
 app.use('/joke/content/list.php', jsonPlaceholderProxy);
+app.use('/joke/randJoke.php', jsonPlaceholderProxy);
 app.listen(3000);
 
 // 获取本机ip地址利用导入os

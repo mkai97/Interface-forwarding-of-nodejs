@@ -48,9 +48,9 @@ var proxy = require('http-proxy-middleware');
  * Configure proxy middleware
  */
 var jsonPlaceholderProxy = proxy({
-  target: 'http://v.juhe.cn',
-  changeOrigin: true, // for vhosted sites, changes host header to match to target's host
-  logLevel: 'debug'
+    target: 'https://shop.2dian.com.cn/xcx',
+    changeOrigin: true, // for vhosted sites, changes host header to match to target's host
+    logLevel: 'debug'
 });
 
 var app = express();
@@ -59,42 +59,62 @@ var app = express();
  * Add the proxy to express
  */
 
-app.all("*",function(req,res,next){
+app.all("*", function (req, res, next) {
     //设置允许跨域的域名，*代表允许任意域名跨域
-    res.header("Access-Control-Allow-Origin","*");
+    res.header("Access-Control-Allow-Origin", "*");
     //允许的header类型
-    res.header("Access-Control-Allow-Headers","content-type");
+    res.header("Access-Control-Allow-Headers", "content-type,x-token");
     //跨域允许的请求方式 
-    res.header("Access-Control-Allow-Methods","DELETE,PUT,POST,GET,OPTIONS");
+    res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
     if (req.method.toLowerCase() == 'options')
-        res.send(200);  //让options尝试请求快速结束
+    res.sendStatus(200)  //让options尝试请求快速结束
     else
         next();
 })
+const questions =
+    { "code": 20000, "data": { "token": "admin-token" } }
 
-
+// app.use('/vue-element-admin/user/login',jsonPlaceholderProxy)
+app.post('/vue-element-admin/user/login', function (req, res) {
+    res.status(200).json(questions)
+});
+const questions2 = { "code": 20000, "data": { "roles": ["admin"], "introduction": "I am a super administrator", "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif", "name": "Super Admin" } }
+app.get('/vue-element-admin/user/info', function (req, res) {
+    
+    res.status(200).json(questions2)
+})
 app.use('/joke/content/list.php', jsonPlaceholderProxy);
 app.use('/joke/randJoke.php', jsonPlaceholderProxy);
 app.use('/toutiao/index', jsonPlaceholderProxy);
+app.use('/sys/authority/getAuthority', jsonPlaceholderProxy)
+app.use('/shop/cate/getCategoryList', jsonPlaceholderProxy)
+app.use('/sys/sysuser/login', jsonPlaceholderProxy)
+app.use('/shop/cate/deleteCategory', jsonPlaceholderProxy)
+app.use('/shop/cate/uploadAttachement', jsonPlaceholderProxy)
+app.use('/shop/good/getGoodList', jsonPlaceholderProxy)
+app.use('/shop/good/getGoodById',jsonPlaceholderProxy)
+
+
 app.listen(3000);
 
+
 // 获取本机ip地址利用导入os
-function getIPAddress(){
+function getIPAddress() {
     var interfaces = require('os').networkInterfaces();
-    for(var devName in interfaces){
+    for (var devName in interfaces) {
         var iface = interfaces[devName];
-        for(var i=0;i<iface.length;i++){
+        for (var i = 0; i < iface.length; i++) {
             var alias = iface[i];
-            if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
                 return alias.address;
             }
         }
     }
-  }
-  
-  const LOCAL_IP = getIPAddress()
+}
 
-console.log('[DEMO] Server: listening on port 3000 or '+LOCAL_IP+':3000');
-console.log('[DEMO] Opening: http://localhost:3000/'+' or http://'+LOCAL_IP+':3000');
+const LOCAL_IP = getIPAddress()
+
+console.log('[DEMO] Server: listening on port 3000 or ' + LOCAL_IP + ':3000');
+console.log('[DEMO] Opening: http://localhost:3000/' + ' or http://' + LOCAL_IP + ':3000');
 
 // require('open')('http://localhost:3000/');

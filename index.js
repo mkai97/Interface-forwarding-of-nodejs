@@ -93,6 +93,9 @@ app.use('/shop/cate/deleteCategory', jsonPlaceholderProxy)
 app.use('/shop/cate/uploadAttachement', jsonPlaceholderProxy)
 app.use('/shop/good/getGoodList', jsonPlaceholderProxy)
 app.use('/shop/good/getGoodById',jsonPlaceholderProxy)
+app.use('/shop/cate/getAllCateListName',jsonPlaceholderProxy)
+app.use(`/shop/good/uploadAttachement`,jsonPlaceholderProxy)
+
 
 
 app.listen(3000);
